@@ -1,0 +1,6 @@
+{
+    "require": {
+        "doctrine/annotations": "^2.0",
+        "symfony/orm-pack": "^2.3"
+    }
+}
