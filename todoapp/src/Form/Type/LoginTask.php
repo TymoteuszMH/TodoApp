@@ -7,6 +7,9 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LoginType extends AbstractType
@@ -16,8 +19,28 @@ class LoginType extends AbstractType
         $builder
             ->add('username', TextType::class, ['required' => true, 'attr' => ['class' => 'form-control']])
             ->add('password', PasswordType::class, ['required' => true, 'attr' => ['class' => 'form-control']])
-            ->add('save', SubmitType::class, ['label' => 'Login'])
         ;
+
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function(FormEvent $event) {
+                $form = $event->getForm();
+                $data = $event->getData();
+                if($data){
+                    if($data->getId()>0)
+                        $form->add('save', SubmitType::class, ['label' => 'Update data']);
+                    else
+                        $form->add('save', SubmitType::class, ['label' => 'Sign In']);
+                }
+                else
+                    $form->add('save', SubmitType::class, ['label' => 'Sign Up']);
+                
+            }
+        );
+    }
+
+    public function setupSubmitLabel(FormInterface $form, string $submitName){
+        $form->add('save', SubmitType::class, ['label' => $submitName]);
     }
     
     public function configureOptions(OptionsResolver $resolver): void
@@ -26,5 +49,7 @@ class LoginType extends AbstractType
             'data_class' => User::class,
         ]);
     }
+
+    
 }
 ?>

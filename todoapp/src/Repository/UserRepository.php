@@ -74,4 +74,14 @@ class UserRepository extends ServiceEntityRepository
            ->getOneOrNullResult()
        ;
    }
+
+   public function checkIfExists($username): ?User
+   {
+       return $this->createQueryBuilder('u')
+           ->andWhere('u.username = :username')
+           ->setParameter('username', $username)
+           ->getQuery()
+           ->getOneOrNullResult()
+       ;
+   }
 }

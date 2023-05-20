@@ -1,3 +1,9 @@
 <body>
-{{ form(form) }}
+    {% if not_exists%}
+    <p style="color:red;">User doesn't exists!</p>
+    {% endif %}
+    {{ form(form) }}
+    <a href="{{ path('signup') }}">
+        You don't have an account? Sign up!
+    </a>
 </body>
