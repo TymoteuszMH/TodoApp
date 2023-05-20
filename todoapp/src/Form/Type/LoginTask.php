@@ -9,7 +9,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LoginType extends AbstractType
@@ -37,10 +36,6 @@ class LoginType extends AbstractType
                 
             }
         );
-    }
-
-    public function setupSubmitLabel(FormInterface $form, string $submitName){
-        $form->add('save', SubmitType::class, ['label' => $submitName]);
     }
     
     public function configureOptions(OptionsResolver $resolver): void

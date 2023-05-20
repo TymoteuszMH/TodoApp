@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
@@ -32,7 +31,7 @@ class UserController extends AbstractController
 
             $check = $userRepo->login($user->getUsername(), $user->getPassword());
             if($check){
-                $session = new Session(); 
+                $session = $request->getSession();
                 $session->start(); 
                 $session->set('id', $check->getId());
                 $session->set('username', $check->getUsername());
@@ -66,7 +65,7 @@ class UserController extends AbstractController
 
             $check = $userRepo->checkIfExists($user->getUsername());
             if(!$check){
-                $userRepo->save($user);
+                $userRepo->save($user, true);
                 return $this->redirectToRoute('login');
             }else{
                 $exists = true;
@@ -75,6 +74,43 @@ class UserController extends AbstractController
         }
 
         return $this->render('user/signup.html.twig', [
+            'form' => $form->createView(),
+            'exists' => $exists,
+        ]);
+    }
+
+    #[Route('/update_user', name: 'update_user')]
+    public function updateUser(EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $exists = false;
+
+        $userRepo = $entityManager->getRepository(User::class);
+
+        
+        $user = new User();
+        $session = $request->getSession();
+        $user->setId($session->get('id'));
+        $user->setUsername($session->get('username'));
+        $user->setPassword($session->get('password'));
+
+        $form = $this->createForm(LoginType::class, $user);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
+
+            $check = $userRepo->checkIfExists($user->getUsername());
+            if($check && $check->getUsername() != $session->get('username')){
+                $exists = true;
+            }else{
+                $userRepo->save($user, true);
+                return $this->redirectToRoute('home');
+            }
+            
+        }
+
+        return $this->render('user/update.html.twig', [
             'form' => $form->createView(),
             'exists' => $exists,
         ]);

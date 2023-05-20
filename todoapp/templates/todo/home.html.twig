@@ -1,0 +1,15 @@
+<body>
+    <h1>Welcome {{ user }}</h1>
+
+    {% dump todo_lists %}
+
+    {% for list in todo_lists %}
+        <div class='card'>
+            <div class="card-body">
+                <div class="card-title">
+                    <h3>{{ list.title }}</h3>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</body>

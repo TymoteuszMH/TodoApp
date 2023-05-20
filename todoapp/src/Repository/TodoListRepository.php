@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\TodoList;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -42,16 +43,16 @@ class TodoListRepository extends ServiceEntityRepository
 //    /**
 //     * @return TodoList[] Returns an array of TodoList objects
 //     */
-   public function findByUser($user): array
-   {
-       return $this->createQueryBuilder('t')
-           ->andWhere('t.user_id = :user')
-           ->setParameter('user', $user)
-           ->orderBy('t.id', 'ASC')
-           ->getQuery()
-           ->getResult()
-       ;
-   }
+    public function findByUser(?User $user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('t.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     public function findOneById($id): ?TodoList
     {
