@@ -19,8 +19,6 @@ class UserController extends AbstractController
         $userRepo = $entityManager->getRepository(User::class);
 
         $user = new User();
-        $user->setUsername('');
-        $user->setPassword('');
 
         $form = $this->createForm(LoginType::class, $user);
 
@@ -65,7 +63,7 @@ class UserController extends AbstractController
 
             $check = $userRepo->checkIfExists($user->getUsername());
             if(!$check){
-                $userRepo->save($user, true);
+                $userRepo->saveUser($user, true);
                 return $this->redirectToRoute('login');
             }else{
                 $exists = true;
@@ -86,12 +84,9 @@ class UserController extends AbstractController
 
         $userRepo = $entityManager->getRepository(User::class);
 
-        
-        $user = new User();
         $session = $request->getSession();
-        $user->setId($session->get('id'));
-        $user->setUsername($session->get('username'));
-        $user->setPassword($session->get('password'));
+
+        $user = $userRepo->findUserById($session->get('id'));
 
         $form = $this->createForm(LoginType::class, $user);
 
@@ -104,7 +99,7 @@ class UserController extends AbstractController
             if($check && $check->getUsername() != $session->get('username')){
                 $exists = true;
             }else{
-                $userRepo->save($user, true);
+                $userRepo->saveUser($user, true);
                 return $this->redirectToRoute('home');
             }
             
@@ -114,6 +109,16 @@ class UserController extends AbstractController
             'form' => $form->createView(),
             'exists' => $exists,
         ]);
+    }
+
+    #[Route('/signout', name: 'signout')]
+    public function signOut(EntityManagerInterface $entityManager, Request $request): Response
+    {
+
+        $session = $request->getSession(); 
+        $session->clear();
+
+        return $this->redirectToRoute('login');
     }
 }
 ?>

@@ -22,7 +22,7 @@ class TodoList
     #[ORM\Column(length: 100)]
     private ?string $title = null;
 
-    #[ORM\OneToMany(mappedBy: 'list', targetEntity: TodoElement::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'list', targetEntity: TodoElement::class, orphanRemoval: true, cascade: ["persist", "remove"])]
     private Collection $elements;
 
     public function __construct()
@@ -70,8 +70,8 @@ class TodoList
     public function addElement(TodoElement $element): self
     {
         if (!$this->elements->contains($element)) {
-            $this->elements->add($element);
             $element->setList($this);
+            $this->elements->add($element); 
         }
 
         return $this;

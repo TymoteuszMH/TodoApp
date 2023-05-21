@@ -22,7 +22,7 @@ class TodoListRepository extends ServiceEntityRepository
         parent::__construct($registry, TodoList::class);
     }
 
-    public function save(TodoList $entity, bool $flush = false): void
+    public function saveList(TodoList $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -31,7 +31,7 @@ class TodoListRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(TodoList $entity, bool $flush = false): void
+    public function removeList(TodoList $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -43,7 +43,7 @@ class TodoListRepository extends ServiceEntityRepository
 //    /**
 //     * @return TodoList[] Returns an array of TodoList objects
 //     */
-    public function findByUser(?User $user): array
+    public function findListByUser(?User $user): array
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.user = :user')
@@ -54,7 +54,7 @@ class TodoListRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findOneById($id): ?TodoList
+    public function findListById($id): ?TodoList
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.id = :id')

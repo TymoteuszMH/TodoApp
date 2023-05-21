@@ -21,7 +21,7 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function save(User $entity, bool $flush = false): void
+    public function saveUser(User $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class UserRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(User $entity, bool $flush = false): void
+    public function removeUser(User $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -53,7 +53,7 @@ class UserRepository extends ServiceEntityRepository
 //            ->getResult()
 //        ;
 //    }
-   public function findOneById($id): ?User
+   public function findUserById($id): ?User
    {
        return $this->createQueryBuilder('u')
            ->andWhere('u.id = :id')

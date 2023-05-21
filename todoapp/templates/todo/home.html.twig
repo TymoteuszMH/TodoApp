@@ -1,13 +1,22 @@
 <body>
     <h1>Welcome {{ user }}</h1>
 
-    {% dump todo_lists %}
-
+    <a href="{{ path('add_list') }}">
+        Add
+    </a>
     {% for list in todo_lists %}
         <div class='card'>
             <div class="card-body">
-                <div class="card-title">
-                    <h3>{{ list.title }}</h3>
+                <div class="card-header">
+                    <h3 class="card-title">{{ list.title }}</h3>
+                </div>
+                <div class="card-body">
+                        <a href="{{ path('list_details', {'id': list.id}) }}">
+                            Go to details
+                        </a>
+                        <a href="{{ path('delete_list', {'id': list.id}) }}">
+                            Delete
+                        </a>
                 </div>
             </div>
         </div>

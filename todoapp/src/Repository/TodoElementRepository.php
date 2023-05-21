@@ -21,7 +21,7 @@ class TodoElementRepository extends ServiceEntityRepository
         parent::__construct($registry, TodoElement::class);
     }
 
-    public function save(TodoElement $entity, bool $flush = false): void
+    public function saveElement(TodoElement $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class TodoElementRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(TodoElement $entity, bool $flush = false): void
+    public function removeElement(TodoElement $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
