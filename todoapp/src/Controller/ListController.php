@@ -1,12 +1,12 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\TodoElement;
 use App\Entity\User;
 use App\Entity\TodoList;
 use App\Form\Type\ListType;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +20,9 @@ class ListController extends AbstractController
         $session = $request->getSession();
 
         $user = $entityManager->getRepository(User::class)->findUserById($session->get('id'));
+        
+        if(!$user)
+            return $this->redirectToRoute('login');
 
         $lists = $entityManager->getRepository(TodoList::class)->findListByUser($user);
 
@@ -35,7 +38,11 @@ class ListController extends AbstractController
         $session = $request->getSession();
 
         $listRepo = $entityManager->getRepository(TodoList::class);
+        
         $user = $entityManager->getRepository(User::class)->findUserById($session->get('id'));
+
+        if(!$user)
+            return $this->redirectToRoute('login');
 
         $list = new TodoList();
         $list->setTitle('No Title');
@@ -51,8 +58,11 @@ class ListController extends AbstractController
     public function delails(EntityManagerInterface $entityManager, Request $request, int $id): Response
     {
         $listRepo = $entityManager->getRepository(TodoList::class);
-
+        
         $list = $listRepo->findListById($id);
+        if(!$list)
+            return $this->redirectToRoute('error');
+
 
         $form = $this->createForm(ListType::class, $list);
 

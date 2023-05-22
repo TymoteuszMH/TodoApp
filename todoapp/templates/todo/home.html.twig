@@ -1,24 +1,54 @@
-<body>
-    <h1>Welcome {{ user }}</h1>
+{% extends 'base.html.twig' %}
+{% block body %}
+    <nav>
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('update_user') }}">Update user</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('home') }}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('signout') }}">Log out</a>
+            </li>
+        </ul>
+    </nav>
+    <div class='container text-center'>
+        <h1>Welcome {{ user }}</h1>
+        <a class="btn btn-primary" style="margin-bottom: 10px;" href="{{ path('add_list') }}">Add</a>
 
-    <a href="{{ path('add_list') }}">
-        Add
-    </a>
-    {% for list in todo_lists %}
-        <div class='card'>
-            <div class="card-body">
-                <div class="card-header">
-                    <h3 class="card-title">{{ list.title }}</h3>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-2">
+            {% for list in todo_lists %}
+                <div class="card" style="width: 16rem; margin: 10px">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ list.title }}
+                            <div class="float-end">
+                                <a class="btn" href="{{ path('delete_list', {'id': list.id}) }}">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </h3>
+                    </div>
+
+                    <a href="{{ path('list_details', {'id': list.id}) }}" class="btn card-body">
+                        <div class="float-start">
+                            <ol style="color: grey" class="card-text float-start">
+                                {% for element in list.elements %}
+                                    {% if loop.index <= 3 %}
+                                        {% if element.status %}
+                                            <li><s>{{ element.getContent() }} </s></li>
+                                        {% else %}
+                                            <li>{{ element.getContent() }}</li>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    No elements
+                                {% endfor %}...
+                            </ol><br>
+                        </div>
+                    </a>
                 </div>
-                <div class="card-body">
-                        <a href="{{ path('list_details', {'id': list.id}) }}">
-                            Go to details
-                        </a>
-                        <a href="{{ path('delete_list', {'id': list.id}) }}">
-                            Delete
-                        </a>
-                </div>
-            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-</body>
+    </div>
+{% endblock %}

@@ -1,56 +1,127 @@
-<body>
-    {{ form_start(form) }}
-        <button type="button" class="add_item_link" data-collection-holder-class="elements">Add new element</button>
-        <ol class="elements"
-        data-index="{{ form.elements|length > 0 ? form.elements|last.vars.name + 1 : 0 }}"
-        data-prototype="{{ form_widget(form.elements.vars.prototype)|e('html_attr') }}">
-            {% for element in form.elements %}
-                <li>
-                    {{ form_row(element.content) }}
-                </li>
-            {% endfor %}
-        </ol>
-    {{ form_end(form) }}
+{% extends 'base.html.twig' %}
+{% block body %}
+    <nav>
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('update_user') }}">Update user</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('home') }}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('signout') }}">Log out</a>
+            </li>
+        </ul>
+    </nav>
+    {% set myPrototype = '
+        <div class="input-group mb-3">
+            <div class="input-group-text">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="list[elements][__name__][status]" />
+                </div>
+            </div>
+            <input required="required" class="form-control" type="text" name="list[elements][__name__][content]" />
+        </div>
+    ' %}
+    <div class='container'>
+        {{ form_start(form) }}
+            <div class="col">
+                {{ form_row(form.title) }}
+            </div>
+            <div class="col">
+                <button type="button" class="add_item_link btn btn-primary" data-collection-holder-class="elements" style='margin: 10px;'>Add new element</button>
+                <ol class="elements"
+                data-index="{{ form.elements|length > 0 ? form.elements | last.vars.name + 1 : 0 }}"
+                data-prototype="{{ myPrototype | e('html_attr') }}">
+                    {% for element in form.elements %}
+                        <li>
+                            <div class="input-group mb-3">
+                                <div class="input-group-text">
+                                    {{ form_widget(element.status) }}              
+                                </div>
+                                {{ form_widget(element.content) }}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        {{ form_end(form) }}
 
-    <script>
-        const addRemoveButtonToExistingItems = () => {
-            const collectionHolder = document.querySelector('.elements');
-            const items = collectionHolder.querySelectorAll('li');
+        {% block javascripts %}
+            <script>
+                const createDivs = () =>{
+                    const firstDiv = document.createElement('div');
+                        firstDiv.classList.add("input-group");
+                        firstDiv.classList.add("mb-3");
 
-            items.forEach(item => {
-                const removeButton = document.createElement('button');
-                removeButton.innerText = 'Delete';
-                removeButton.addEventListener('click', () => {
-                    item.remove();
-                });
-                item.appendChild(removeButton);
-            });
-        };
+                    return firstDiv;
+                }
+                const createSpan = () =>{
+                    const span = document.createElement('span');
+                    span.classList.add("input-group-text");
 
-        const addFormToCollection = (e) => {
-            const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+                    return span;
+                }
 
-            const item = document.createElement('li');
+                const createButton = () =>{
+                    const removeButton = document.createElement('button');
+                    removeButton.classList.add("btn");
+                        const removeIcon = document.createElement('i');
+                        removeIcon.classList.add("bi");             
+                        removeIcon.classList.add("bi-trash");     
+                    removeButton.appendChild(removeIcon);  
 
-            item.innerHTML = collectionHolder.dataset.prototype.replace(/__name__/g, collectionHolder.dataset.index);
+                    return removeButton;
+                }
 
-            const removeButton = document.createElement('button');
-            removeButton.innerText = 'Delete';
-            removeButton.addEventListener('click', () => {
-                item.remove();
-            });
-            item.appendChild(removeButton);
+                const addRemoveButtonToExistingItems = () => {
+                    const collectionHolder = document.querySelector('.elements');
+                    const items = collectionHolder.querySelectorAll('.input-group');
 
-            collectionHolder.appendChild(item);
+                    items.forEach(item => {
+                        const span = createSpan();
+                            const removeButton = createButton();
+                            span.appendChild(removeButton);
 
-            collectionHolder.dataset.index++;
-        };
+                            removeButton.addEventListener('click', () => {
+                                item.remove();
+                            });
+                        item.appendChild(span);
+                    });
+                };
 
-        document.querySelectorAll('.add_item_link')
-            .forEach(btn => {
-                btn.addEventListener("click", addFormToCollection)
-            });
-            
-        addRemoveButtonToExistingItems();
-    </script>
-</body>
+                const addFormToCollection = (e) => {
+                    const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+                    const item = document.createElement('li');
+                    
+                    item.innerHTML = collectionHolder.dataset.prototype.replace(/__name__/g, collectionHolder.dataset.index);
+
+
+                        const span = createSpan();
+                            const removeButton = createButton();
+                                span.appendChild(removeButton);
+
+                            removeButton.addEventListener('click', () => {
+                                item.remove();
+                            });
+
+
+                    item.querySelector('.input-group').appendChild(span); 
+
+                    collectionHolder.appendChild(item);
+
+                    collectionHolder.dataset.index++;
+                };
+
+                document.querySelectorAll('.add_item_link')
+                    .forEach(btn => {
+                        btn.addEventListener("click", addFormToCollection)
+                    });
+
+                addRemoveButtonToExistingItems();
+            </script>
+        {% endblock %}
+
+    </div>
+{% endblock %}

@@ -1,9 +1,22 @@
-<body>
-    {% if not_exists%}
-    <p style="color:red;">User doesn't exists!</p>
-    {% endif %}
-    {{ form(form) }}
-    <a href="{{ path('signup') }}">
-        You don't have an account? Sign up!
-    </a>
-</body>
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container position-absolute top-50 start-50 translate-middle">
+        <div class="card mx-auto" style="max-width: 20rem;">
+            <div class="card-body mx-auto">
+                <div class="card-title text-center">
+                    Sign in
+                </div>
+                
+                {% if not_exists%}
+                    <div class="alert alert-warning">
+                        User doesn't exists!
+                    </div>
+                {% endif %}
+                
+                {{ form(form) }}
+
+                <a class="link-opacity-75-hover" href="{{ path('signup') }}">You don't have an account? Sign up!</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

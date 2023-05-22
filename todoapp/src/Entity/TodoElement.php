@@ -20,6 +20,9 @@ class TodoElement
     #[ORM\JoinColumn(nullable: false)]
     private ?TodoList $list = null;
 
+    #[ORM\Column]
+    private ?bool $status = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +48,18 @@ class TodoElement
     public function setList(?TodoList $list): self
     {
         $this->list = $list;
+
+        return $this;
+    }
+
+    public function isStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(bool $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

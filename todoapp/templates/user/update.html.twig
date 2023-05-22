@@ -1,6 +1,33 @@
-<body>
-    {% if exists%}
-    <p style="color:red;">Username occupied!</p>
-    {% endif %}
-    {{ form(form) }}
-</body>
+{% extends 'base.html.twig' %}
+{% block body %}
+    <nav>
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('update_user') }}">Update user</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('home') }}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('signout') }}">Log out</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="container position-absolute top-50 start-50 translate-middle">
+        <div class="card mx-auto" style="max-width: 20rem;">
+            <div class="card-body mx-auto">
+                <div class="card-title text-center">
+                    Update user
+                </div>
+                
+                {% if exists%}
+                    <div class="alert alert-success">
+                        Username occupied!
+                    </div>
+                {% endif %}
+                
+                {{ form(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

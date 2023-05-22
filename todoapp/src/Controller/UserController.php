@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\Type\LoginType;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,13 @@ class UserController extends AbstractController
 
         $userRepo = $entityManager->getRepository(User::class);
 
+        $session = $request->getSession();
+
+        $user = $userRepo->findUserById($session->get('id'));
+
+        if($user)
+            return $this->redirectToRoute('home');
+            
         $user = new User();
 
         $form = $this->createForm(LoginType::class, $user);
@@ -29,7 +37,6 @@ class UserController extends AbstractController
 
             $check = $userRepo->login($user->getUsername(), $user->getPassword());
             if($check){
-                $session = $request->getSession();
                 $session->start(); 
                 $session->set('id', $check->getId());
                 $session->set('username', $check->getUsername());
@@ -53,6 +60,13 @@ class UserController extends AbstractController
         $exists = false;
 
         $userRepo = $entityManager->getRepository(User::class);
+
+        $session = $request->getSession();
+
+        $user = $userRepo->findUserById($session->get('id'));
+
+        if($user)
+            return $this->redirectToRoute('home');
 
         $form = $this->createForm(LoginType::class);
 
@@ -85,8 +99,11 @@ class UserController extends AbstractController
         $userRepo = $entityManager->getRepository(User::class);
 
         $session = $request->getSession();
-
+        
         $user = $userRepo->findUserById($session->get('id'));
+
+        if(!$user)
+            return $this->redirectToRoute('login');
 
         $form = $this->createForm(LoginType::class, $user);
 

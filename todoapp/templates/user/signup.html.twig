@@ -1,9 +1,22 @@
-<body>
-    {% if exists%}
-    <p style="color:red;">User already exists!</p>
-    {% endif %}
-    {{ form(form) }}
-    <a href="{{ path('login') }}">
-        You have an account? Sign in!
-    </a>
-</body>
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container position-absolute top-50 start-50 translate-middle">
+        <div class="card mx-auto" style="max-width: 20rem;">
+            <div class="card-body mx-auto">
+                <div class="card-title text-center">
+                    Sign up
+                </div>
+
+                {% if exists%}
+                    <div class="alert alert-warning">
+                        User already exists!
+                    </div>
+                {% endif %}
+                
+                {{ form(form) }}
+
+                <a class="link-opacity-75-hover" href="{{ path('login') }}">You have an account? Sign in!</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
